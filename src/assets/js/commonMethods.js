@@ -48,6 +48,7 @@ var conmonMethods = {
                     //console.log(map)
                    // console.log(map)
                     map.getView().setCenter(transform([lon, lat], 'EPSG:4326', 'EPSG:3857'))
+                    console.log(transform([lon, lat], 'EPSG:4326', 'EPSG:3857'))
                     map.getView().setZoom(10)
                     let iconStyle = new Style({
                         image: new Icon(({

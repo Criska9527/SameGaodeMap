@@ -1,0 +1,13 @@
+.el-dropdown:hover{
+    color:#2c9eff !important
+}
+.el-dropdown-menu{
+    left: 8.02rem !important;
+}
+.popper__arrow{
+    left: 0.4211rem !important;
+}
+ul li{
+    margin: 0;
+    padding: 0;
+}

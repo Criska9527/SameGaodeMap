@@ -2,13 +2,13 @@
   <div class="cityChange">
       <ul>
         <li class="citychose">
-              <el-dropdown type="primary">
+              <el-dropdown type="primary" trigger="click">
                   <span class="el-dropdown-link">
                   {{city}}
                   <i class="el-icon-arrow-down el-icon--right"></i>
                   </span>
                    <el-dropdown-menu slot="dropdown">
-                        城市选择
+                       <city-chose-list></city-chose-list>
                   </el-dropdown-menu>
               </el-dropdown>
         </li>
@@ -27,6 +27,7 @@
 <script>
 import { transform } from 'ol/proj'
 import {mapconfig} from '../assets/config/mapconfig'
+import CityChoseList from '@/components/citychoselist.vue'
 export default {
     name:'CityChose',
     data(){
@@ -100,6 +101,9 @@ export default {
                 }
             })
         }
+    },
+    components:{
+        CityChoseList
     }
 
 }
@@ -109,6 +113,7 @@ export default {
 <style lang="stylus" scoped>
 @import '~styles/varibles.styl'
 @import '~styles/mixins.styl'
+@import '~styles/common.css'
 .cityChange
   defaultdiv()
   top: 0.32rem;
@@ -116,6 +121,7 @@ export default {
   font-size: 0.28rem;
   background: #fff;
   border:none;
+  cursor:pointer
   ul
     margin:0
     padding:0
@@ -128,6 +134,8 @@ export default {
         font-weight:bold 
     .citychose:hover
         color:blue
+        i
+            font-weight:bold 
     .weather
         padding-left: 0;
 </style>

@@ -14,6 +14,13 @@ html,body{
     overflow:hidden;
     font-size:50px;
 }
+ul
+  margin:0;
+  padding:0;
+  list-style: none;
+li
+  margin:0
+  padding:0
 #app
   font-family 'Avenir', Helvetica, Arial, sans-serif
   -webkit-font-smoothing antialiased
