@@ -4,6 +4,8 @@ var mapconfig = {
     "AmapServeKey":'81af61859f5b6da6697c6bab81173795',
     //逆地址解析地址
     "InverseGeoUrl":"https://restapi.amap.com/v3/geocode/regeo",
+    //正地址解析地址:
+    "Geourl":"https://restapi.amap.com/v3/geocode/geo",
     //天气情况地址
     "GetWeatureUrl":"https://restapi.amap.com/v3/weather/weatherInfo"
 }

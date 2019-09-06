@@ -8,7 +8,7 @@
                   <i class="el-icon-arrow-down el-icon--right"></i>
                   </span>
                    <el-dropdown-menu slot="dropdown">
-                       <city-chose-list></city-chose-list>
+                       <city-chose-list @currentcity="getcurrentcity" :currentcitys="city"></city-chose-list>
                   </el-dropdown-menu>
               </el-dropdown>
         </li>
@@ -60,7 +60,7 @@ export default {
              const center = transform(this.map.getView().getCenter(), 'EPSG:3857', 'EPSG:4326')
              this.center = center.join(",");
              this.InverseGeo()
-        },500)
+        },800)
        
         //this.center = transform(this.map.getView().getCenter(), 'EPSG:3857', 'EPSG:4326')
       
@@ -100,6 +100,35 @@ export default {
                     this.temperature =data.temperature
                 }
             })
+        },
+        //正地址解析
+        Getadacode(cityname){
+            const url = mapconfig.Geourl
+            this.$axios.get(url,{
+                params:{
+                    key:mapconfig.AmapServeKey,
+                    address:cityname
+                }
+            }).then((res)=>{
+                console.log(res)
+                if(res.statusText==='OK'){
+                    const data = res.data
+                    //城市的编码
+                    this.cityadccode =  data.geocodes[0].adcode
+                    
+                }
+            })
+        },
+        getcurrentcity(cityname){
+            console.log(cityname)
+            this.city = cityname
+            if(cityname==="全国"){
+                this.weature = ''
+                this.temperature = ''
+                return
+            }
+            //正地址解析获取code
+            this.Getadacode(cityname)
         }
     },
     components:{
