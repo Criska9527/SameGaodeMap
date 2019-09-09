@@ -27,7 +27,7 @@
           </el-button>
           <el-dropdown-menu slot="dropdown" class="typemenu">
               <div class="content">
-                   <dl>
+                   <!-- <dl>
                        <li>
                             <dt>全部分类</dt>
                             <dd>
@@ -48,7 +48,8 @@
                             </dd> 
                        </li>
                    
-                   </dl>
+                   </dl> -->
+                   数据不齐全,功能暂不开发
               </div>
           </el-dropdown-menu>
          </el-dropdown>
@@ -122,6 +123,16 @@
 </template>
 <script>
 import { mapconfig } from "../assets/config/mapconfig";
+import conmonMethods from '../assets/js/commonMethods'
+import TileLayer from 'ol/layer/Tile';
+import { transform } from 'ol/proj'
+import { OSM, TileArcGISRest, WMTS } from 'ol/source.js';
+import Feature from 'ol/Feature.js';
+import Point from 'ol/geom/Point.js';
+import VectorLayer from 'ol/layer/Vector.js';
+import VectorSource from 'ol/source/Vector.js';
+import { Icon, Style, Circle as CircleStyle, Fill, Stroke } from 'ol/style.js';
+
 export default {
   name: "SearchRes",
   data(){
@@ -140,13 +151,17 @@ export default {
           searchlist:[],
           orisearchlist:[],
           count:10 ,//总数量
-          typelist:[]
+          typelist:[],
+          publicPath: process.env.BASE_URL
       }
   },
   watch:{
       page(){
          this.searchlist = []
          this.search() 
+      },
+      searchlist(){
+        this.addPoint(this.keywords)
       }
   },
   computed: {
@@ -158,6 +173,11 @@ export default {
     currentcity: {
       get() {
         return this.$store.state.currentcity;
+      }
+    },
+    map:{
+      get(){
+         return this.$store.state.map;
       }
     }
   },
@@ -190,6 +210,9 @@ export default {
                 // }
                
                item.biz_ext.rating = Number(item.biz_ext.rating)
+               item.location.split(',')
+               item.lon = Number(item.location.split(',')[0])
+               item.lat = Number(item.location.split(',')[1])
                //console.log(item)
                this.searchlist.push(item)
             }
@@ -257,7 +280,7 @@ export default {
     },
     //类型的获取
     gettype(){
-      
+        return
         let obj = {
             
 
@@ -295,8 +318,15 @@ export default {
             })
            
         }
-        console.log(this.typelist)
-        
+
+      console.log(this.typelist)
+      let object = {};
+      let objres = this.typelist.reduce((item,next) => {
+            console.log("item is ",item);
+            object[next.partype] ? "" : object[next.partype] = true && item.push(next);
+             return item;
+      },[]);
+      console.log(objres)
 
       
       
@@ -309,6 +339,85 @@ export default {
     //页码改变事件
     handleCurrentChange(val) {
         this.page = val
+    },
+    addPoint(layertype) {
+
+        const map = this.map
+        const publicPath = this.publicPath
+        //数据处理
+        //当数据存在时，对其进行处理
+        let feature, geometry, iconurl, iconsize;
+        let features = []
+        //样式处理
+        if (layertype == '美食') {
+            //餐饮站点
+            //图标地址
+            iconurl = `${publicPath}images/dinner-point.png`
+            iconsize = [18, 18]
+        } else if (layertype == '酒店') {
+            //污染源站点
+            iconurl =  `${publicPath}images/hotel-point.png`
+            iconsize = [18, 18]
+        } else if(layertype == '景点'){
+            //默认设置
+            iconurl = `${publicPath}images/screen-point.png`
+            iconsize = [18, 25]
+        }else{
+           //默认设置
+            iconurl = `${this.publicPath}images/xiaoqu-point.png`
+            iconsize = [18, 25]
+        }
+        let iconStyle = new Style({
+            image: new Icon(({
+                size: iconsize,
+                src: iconurl
+            }))
+        });
+        for (let item of this.searchlist) {
+            //新建点要素
+            geometry = new Point(transform([item.lon, item.lat], 'EPSG:4326', 'EPSG:3857'), "XY")
+           // geometry = new Point([item.lon, item.lat])
+            feature = new Feature(geometry);
+            //给feature赋予属性
+            feature.setProperties(item)
+            //设置点位样式
+            feature.setStyle(iconStyle);
+            //将点位依次传入数据容器
+            features.push(feature)
+
+        }
+        //新建数据源
+        const vectorSource = new VectorSource({
+            features: features
+        });
+        //更新图层的数据并重新渲染
+        //判断是否存在VectorLayer，存在则清空所有该图层数据源，并重新渲染
+
+
+        //获取所有的图层
+        const maplayers = map.getLayers()
+
+        console.log(maplayers)
+
+        let vector =  conmonMethods.getWantedLayer('pointlayer',map)
+        
+        console.log(vector)
+
+        if (vector) {
+            map.removeLayer(vector)   
+        } 
+            //不存在的时候创建新图层
+
+            vector = new VectorLayer({
+                name: 'pointlayer',
+                source: vectorSource
+            })
+            //在地图上添加此图层
+            map.addLayer(vector)
+
+        
+        console.log(map.getLayers())
+
     }
   },
  filters:{
