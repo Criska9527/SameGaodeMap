@@ -111,6 +111,7 @@ export default {
     watch:{
         currentcitys(){
              this.currentcity = this.currentcitys
+             this.$store.commit('changecity',this.currentcity)
         }
     },
      methods: {

@@ -1,0 +1,34 @@
+.addressmenu{
+    left: 12px !important;
+    top:82px !important;
+    
+}
+.typemenu{
+    left: 12px !important;
+    top:82px !important;
+    width: 292px !important
+    
+}
+.recommentmenu{
+    left: 200px !important;
+    top:82px !important;
+}
+.popper__arrow{
+    display: none !important
+}
+li{
+    list-style:none;
+}
+.addresschose{
+    /* width: 114px; */
+}
+.el-dropdown-menu__item{
+    font-size: 12px !important;
+    line-height:21px !important
+}
+.typemenu{
+    font-size: 12px !important;
+    height: 271px;
+    overflow: hidden;
+    overflow-y: auto;
+}

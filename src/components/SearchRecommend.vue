@@ -15,6 +15,7 @@
   </div>
 </template>
 <script>
+
 export default {
   name:'Search',
   data() {

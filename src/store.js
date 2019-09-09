@@ -5,12 +5,22 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    map: null
+    map: null,
+    currentcity:null,
+    keywords:null
   },
   mutations: {
     changemap(state, map) {
       this.state.map = map
-    }
+    },
+    changecity(state,currentcity){
+      this.state.currentcity = currentcity
+      //console.log(this.state.currentcity)
+    },
+    changekeywords(state,keywords){
+      this.state.keywords = keywords
+      //console.log(this.state.currentcity)
+    },
   },
   actions: {
     sendmap(context, map) {

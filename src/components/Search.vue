@@ -12,19 +12,26 @@
         </div>
       </div>
     </div>
+     <transition name="searchRec">
     <div class="Recomment" v-show="recommendstatus">
         <ul>
-            <li v-for="(item,index) in recommend" :key="index" @click="recommendclick" ref="reli" class="Recomment-li">
-                <img :src="item.url" alt="">
+            <li v-for="(item,index) in recommend" :key="index" @click="getkeywords(item.title)"  class="Recomment-li">
+                <img :src="item.url" :name="item.title">
                 <div class="title">
                     {{item.title}}
                 </div>
             </li>
         </ul>
     </div>
+     </transition>
+    <transition name="searchRes">
+        <search-res v-if="searchRes"></search-res>
+    </transition>
   </div>
 </template>
 <script>
+import {mapconfig} from '../assets/config/mapconfig'
+import SearchRes from '@/components/SearchRes.vue'
 export default {
   name:'Search',
   data() {
@@ -49,16 +56,42 @@ export default {
               title:'小区'
           }
       ],
-      recommendstatus:false
+      recommendstatus:false,
+      searchRes:false,
+      renderstatus:true //判断是不是在结果渲染状态
     };
+  },
+  computed:{
+    // currentcity:{
+    //   get(){
+    //     return this.$store.state.currentcity
+    //   }
+    // }
   },
   methods:{
       showdiv(){
+        if(this.renderstatus)
          this.recommendstatus = true
+         this.renderstatus = false
       },
-      recommendclick(){
-          //this.$refs.
+      // recommendclick(e){
+      //   //alert(this.$refs.reli.innerText)
+      //   //console.log(e.target.tagName)
+      //   //判断dom类型
+      //   if(e.target.tagName==='IMG'){
+      //       console.log(e.target.name)
+      //   }else{
+      //       console.log(e.target.innerText)
+      //   }
+      // },
+      getkeywords(keywords){
+          this.$store.commit('changekeywords',keywords)
+          this.searchRes = true
+          this.recommendstatus = false
       }
+  },
+  components:{
+    SearchRes
   }
 };
 </script>

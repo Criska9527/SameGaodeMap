@@ -13,7 +13,8 @@
     cursor: pointer;
 }
 .Recomment ul{
-    display:flex
+    display:flex;
+    cursor: pointer;
 }
 .Recomment ul img{
     max-width:50px
@@ -24,4 +25,23 @@
 .Recomment ul li:hover{
     color:#42a5f5;
     background:#eee;
+}
+
+.searchRes-enter,
+.searchRes-leave-to {
+  opacity: 0;
+  transform: translateY(70px);
+}
+.searchRes-enter-active,
+.searchRes-leave-active{
+  transition: all 0.8s ease;
+}
+.searchRec-enter,
+.searchRec-leave-to{
+    opacity: 0;
+    transform: translateY(70px);
+}
+.searchRec-enter-active,
+.searchRec-leave-active{
+  transition: all 0.3s ease;
 }

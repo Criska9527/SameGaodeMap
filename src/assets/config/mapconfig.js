@@ -7,6 +7,9 @@ var mapconfig = {
     //正地址解析地址:
     "Geourl":"https://restapi.amap.com/v3/geocode/geo",
     //天气情况地址
-    "GetWeatureUrl":"https://restapi.amap.com/v3/weather/weatherInfo"
+    "GetWeatureUrl":"https://restapi.amap.com/v3/weather/weatherInfo",
+    //搜索地址
+    "SearchUrl":"https://restapi.amap.com/v3/place/text",
+    "GovUrl":"https://restapi.amap.com/v3/config/district"
 }
 export {mapconfig}
