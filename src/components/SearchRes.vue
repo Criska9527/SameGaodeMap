@@ -140,6 +140,7 @@ import VectorLayer from 'ol/layer/Vector.js';
 import VectorSource from 'ol/source/Vector.js';
 //import { AtlasManager,Icon, Style, Circle as CircleStyle, Fill, Stroke,RegularShape,Stroke } from 'ol/style.js';
 import PoiDetail from '@/components/PoiDetail.vue'
+import Text from 'ol/style/Text'
 
 
 
@@ -448,7 +449,10 @@ export default {
             iconsize = [20, 32]
         }
         let iconStyle = new Style({
-            image: a
+            image: a,
+            text:new Text({
+              text:'11'
+            })
         });
         for (let item of this.searchlist) {
             //新建点要素
