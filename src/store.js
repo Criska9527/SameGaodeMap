@@ -7,7 +7,14 @@ export default new Vuex.Store({
   state: {
     map: null,
     currentcity:null,
-    keywords:null
+    keywords:null,
+    currentinput:null,
+    status:{
+      listshow:true,
+      detailshow:false
+    },
+    stateinput:null,
+    searchkey:''
   },
   mutations: {
     changemap(state, map) {
@@ -21,6 +28,19 @@ export default new Vuex.Store({
       this.state.keywords = keywords
       //console.log(this.state.currentcity)
     },
+    changeinput(state,currentinput){
+      this.state.currentinput = currentinput
+    },
+    changestatus(state,status){
+      this.state.status = status
+    },
+    changestateinput(state,stateinput){
+        this.state.stateinput = stateinput
+    },
+    changesearchkeys(state,searchkey){
+      this.state.searchkey = searchkey
+  }
+    
   },
   actions: {
     sendmap(context, map) {

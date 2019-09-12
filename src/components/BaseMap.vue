@@ -56,7 +56,7 @@ export default {
     },
     //添加高德切片
     addGaodeXYZ(){
-      const urls = `http://wprd0{1-4}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&style=7&x={x}&y={y}&z={z}`
+      const urls = `http://webrd0{1-4}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={x}&y={y}&z={z}`
       const layer = new TileLayer({
             source: new XYZ({
                 url: urls

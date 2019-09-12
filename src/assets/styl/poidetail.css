@@ -1,0 +1,19 @@
+.back{
+    position: absolute;
+    top: 4px;
+    z-index: 10;
+    left: 4px;
+    cursor: pointer !important;
+}
+.back .el-button--default{
+    background: rgba(68, 65, 65, 0.6) !important;
+    border: none;
+    color: white !important;
+    font-weight: bold
+}
+.back .el-button--default:hover{
+    color: #0e89f5 !important;
+}
+.bottom ul li:hover{
+    color:#03a9f4 !important
+}

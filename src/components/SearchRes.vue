@@ -1,6 +1,7 @@
 <template>
   <div class="parcontent">
-    <header>
+    <div class="list" v-show="status.listshow">
+      <header>
       <li class="addresschose">
         <el-dropdown trigger="click" placement="bottom" @visible-change="getgov">
           <el-button type="primary" size="mini"> 
@@ -78,7 +79,8 @@
             <ul>
                 <li  
                     v-for="(item,index) in searchlist"
-                    :key="index" 
+                    :key="index"
+                    @click="poidetails(item)" 
                  >
                     <div class="left baseinfo">
                         <div class="name">
@@ -119,6 +121,11 @@
         >
         </el-pagination>
     </div>
+    </div>
+    <transition name="detail">
+        <poi-detail v-show="status.detailshow" :selectitem = "selectitem"></poi-detail>
+    </transition>
+
   </div>
 </template>
 <script>
@@ -131,7 +138,13 @@ import Feature from 'ol/Feature.js';
 import Point from 'ol/geom/Point.js';
 import VectorLayer from 'ol/layer/Vector.js';
 import VectorSource from 'ol/source/Vector.js';
-import { Icon, Style, Circle as CircleStyle, Fill, Stroke } from 'ol/style.js';
+//import { AtlasManager,Icon, Style, Circle as CircleStyle, Fill, Stroke,RegularShape,Stroke } from 'ol/style.js';
+import PoiDetail from '@/components/PoiDetail.vue'
+
+
+
+
+   import {AtlasManager, Circle as CircleStyle, Fill, RegularShape, Stroke, Style} from 'ol/style.js';
 
 export default {
   name: "SearchRes",
@@ -152,7 +165,9 @@ export default {
           orisearchlist:[],
           count:10 ,//总数量
           typelist:[],
-          publicPath: process.env.BASE_URL
+          publicPath: process.env.BASE_URL,
+          selectitem:'',
+          keyword:''
       }
   },
   watch:{
@@ -161,8 +176,14 @@ export default {
          this.search() 
       },
       searchlist(){
-        this.addPoint(this.keywords)
+        this.addPoint(this.keyword)
+      },
+      searchkey(){
+         this.searchlist = []
+         this.search() 
+
       }
+
   },
   computed: {
     keywords: {
@@ -179,6 +200,16 @@ export default {
       get(){
          return this.$store.state.map;
       }
+    },
+    status:{
+      get(){
+        return this.$store.state.status;
+      }
+    },
+    searchkey:{
+      get(){
+        return this.$store.state.searchkey;
+      }
     }
   },
   mounted() {
@@ -187,10 +218,18 @@ export default {
   methods: {
     //查询所在区域的数据
     search() {
+      debugger
+      var keywords = ''
+      const publicPath = this.publicPath
+      if(this.searchkey!=''){
+        this.keyword = this.searchkey
+      }else{
+         this.keyword = this.keywords
+      }
       this.$axios
         .get(mapconfig.SearchUrl, {
           params: {
-            keywords: this.keywords,
+            keywords:  this.keyword,
             city: this.currentcity,
             key: mapconfig.AmapServeKey,
             extensions: "all",
@@ -202,7 +241,13 @@ export default {
             const data = res.data;
             console.log(res)
             this.count = Number(data.count)
-            this.origincount =  Number(data.count)
+         
+            if(this.origincount){
+                 this.origincount =  Number(data.count)
+            }else{
+               this.origincount =0
+            }
+            
             //this.searchlist = data.pois
             for(let item of  data.pois){
                 // if(item.bizext.rating){
@@ -213,7 +258,19 @@ export default {
                item.location.split(',')
                item.lon = Number(item.location.split(',')[0])
                item.lat = Number(item.location.split(',')[1])
-               //console.log(item)
+               if(typeof(item.biz_ext.rating) == undefined){
+                    item.biz_ext.rating  = 0
+               }
+               if(item.photos.length<=0){
+                 item.photos.push(
+                   {
+                       url:`${publicPath}images/default.png`
+                   }
+                 
+                 )
+                 console.log(item.photos[0])
+               }
+              
                this.searchlist.push(item)
             }
             this.orisearchlist = this.searchlist
@@ -353,25 +410,45 @@ export default {
             //餐饮站点
             //图标地址
             iconurl = `${publicPath}images/dinner-point.png`
-            iconsize = [18, 18]
+            iconsize = [24, 24]
         } else if (layertype == '酒店') {
             //污染源站点
             iconurl =  `${publicPath}images/hotel-point.png`
-            iconsize = [18, 18]
+            iconsize = [24, 24]
         } else if(layertype == '景点'){
             //默认设置
-            iconurl = `${publicPath}images/screen-point.png`
+            iconurl = `${publicPath}images/旅游景点.png`
             iconsize = [18, 25]
-        }else{
-           //默认设置
-            iconurl = `${this.publicPath}images/xiaoqu-point.png`
+        }else if(layertype == '景点'){
+            //默认设置
+            iconurl = `${publicPath}images/居民小区村庄.png`
             iconsize = [18, 25]
         }
+        else{
+          // var s = {
+            
+          // }
+           var a = new CircleStyle({
+            opacity:1.0,
+            scale: 1.0,
+            radius:10,
+            fill: new Fill({
+              color:  'rgba(255, 153, 0, 0.4)'
+            }),
+            stroke: new Stroke({
+              color: 'rgba(255, 204, 0, 0.2)',
+              width: 20
+            })
+            // by passing the atlas manager to the symbol,
+            // the symbol will be added to an atlas
+         
+          })
+           //默认设置
+            iconurl = `${this.publicPath}images/point_red_small.png`
+            iconsize = [20, 32]
+        }
         let iconStyle = new Style({
-            image: new Icon(({
-                size: iconsize,
-                src: iconurl
-            }))
+            image: a
         });
         for (let item of this.searchlist) {
             //新建点要素
@@ -414,9 +491,23 @@ export default {
             })
             //在地图上添加此图层
             map.addLayer(vector)
-
+            //this.$store.dispatch('sendmap',this.map)
         
         console.log(map.getLayers())
+
+    },
+    poidetail(id){
+        this.$router.push({
+                path: `/${id}`
+        })
+    },
+    poidetails(item){
+      this.selectitem = item
+      
+      this.status.listshow = false
+      this.status.detailshow = true
+      
+
 
     }
   },
@@ -438,7 +529,11 @@ export default {
               return arr[arr.length-2]
         }   
 
+    },
+    components:{
+      PoiDetail
     }
+
 };
 </script>
 <style lang="stylus" scoped>

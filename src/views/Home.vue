@@ -4,6 +4,7 @@
     <city-chose></city-chose>
     <search></search>
    <base-map></base-map>
+   <!-- <router-view></router-view> -->
   </div>
 </template>
 

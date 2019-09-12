@@ -4,7 +4,7 @@
       <div class="search-item">
         <img :src="imgurl" alt="">
         <el-input v-model="input" placeholder="搜索位置，公交站，地铁" class="search-input" @focus="showdiv"></el-input>
-        <div class="searchbtn iconfont iconsousuo1">
+        <div class="searchbtn iconfont iconsousuo1" @click="search">
             <!-- <i class="iconfont iconsousuo1"></i> -->
         </div>
         <div class="search-road-btn iconfont iconroute">
@@ -25,7 +25,7 @@
     </div>
      </transition>
     <transition name="searchRes">
-        <search-res v-if="searchRes"></search-res>
+        <search-res v-if="searchRes"  ref="searchres"></search-res>
     </transition>
   </div>
 </template>
@@ -62,17 +62,32 @@ export default {
     };
   },
   computed:{
-    // currentcity:{
-    //   get(){
-    //     return this.$store.state.currentcity
-    //   }
-    // }
+    currentinput:{
+      get(){
+        //this.input = this.currentinput
+        return this.$store.state.currentinput
+      }
+    }
   },
   methods:{
       showdiv(){
         if(this.renderstatus)
          this.recommendstatus = true
          this.renderstatus = false
+      },
+      test(){
+        //alert(888)
+        
+        // console.log(this.$refs.sss.value)
+          this.$store.commit('changeinput',this.$refs.sss.value)
+      },
+      search(){
+        this.$store.commit('changesearchkeys',this.input)
+        //this.$refs.searchres.search(this.input)
+          this.searchRes = true
+       //console.log(this.$refs.searchres)
+      
+        this.recommendstatus = false
       },
       // recommendclick(e){
       //   //alert(this.$refs.reli.innerText)
@@ -86,9 +101,14 @@ export default {
       // },
       getkeywords(keywords){
           this.$store.commit('changekeywords',keywords)
+          this.$store.commit('changeinput',keywords)
+          //this.input = this.currentinput
           this.searchRes = true
           this.recommendstatus = false
       }
+  },
+  mounted(){
+     //this.input = this.currentinput
   },
   components:{
     SearchRes

@@ -32,3 +32,12 @@ li{
     overflow: hidden;
     overflow-y: auto;
 }
+.detail-enter,
+.detail-leave-to {
+  opacity: 0;
+  transform: translateY(70px);
+}
+.detail-enter-active,
+.detail-leave-active{
+  transition: all 0.8s ease;
+}

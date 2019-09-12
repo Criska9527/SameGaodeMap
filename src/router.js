@@ -3,13 +3,20 @@ import Router from 'vue-router'
 import Home from './views/Home.vue'
 
 Vue.use(Router)
-
+import PoiDetail from '@/components/PoiDetail.vue'
 export default new Router({
   routes: [
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: Home,
+      children: [
+        {
+          path: ':id',
+          component: PoiDetail
+        }
+      ]
+
     },
     {
       path: '/about',
